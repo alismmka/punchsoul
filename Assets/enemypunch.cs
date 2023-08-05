@@ -51,6 +51,7 @@ public class enemypunch : MonoBehaviour
 
     public void Blockstun()
     {
+        punchcol.enabled = false;
         eanim.SetTrigger("hit");
         punchcol.enabled = false;
 

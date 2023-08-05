@@ -16,6 +16,8 @@ public class PunchVelocity : MonoBehaviour
     public GameObject hifx;
     public GameObject bloodfx;
     public Transform fxpos;
+    public int lodmg = 1;
+    public int hidmg = 3;
 
     public float tempVel;
     public ActionBasedContinuousMoveProvider moveprovref;
@@ -67,32 +69,51 @@ public class PunchVelocity : MonoBehaviour
                 tempVel -= 2f;
             }
             */
-            if (collision.gameObject.GetComponent<enemymove>().invulnerable == false)
+            if (collision.gameObject.GetComponent<enemymove>())
             {
                 enemymove emoveref = collision.gameObject.GetComponent<enemymove>();
 
-                if (tempVel > 1f)
+                if (emoveref.invulnerable == false)
                 {
-                    emoveref.Edamage(1);
-                    Instantiate(lofx, collision.GetContact(0).point, Quaternion.identity);
-                     Instantiate(bloodfx, collision.GetContact(0).point, Quaternion.identity);
-                    emoveref.PlayHitAnim(FromRight(collision.GetContact(0).point));
 
+                    if (tempVel > 1.5f)
+                    {
+                        emoveref.Edamage(lodmg);
+                        Instantiate(lofx, collision.GetContact(0).point, Quaternion.identity);
+                        Instantiate(bloodfx, collision.GetContact(0).point, transform.rotation, null);
+                        emoveref.staggeramt += 3f;
+                        if (emoveref.staggeramt > 5.5f || emoveref.hp < lodmg)
+                        {
+                            emoveref.PlayHitAnim(FromRight(collision.GetContact(0).point));
+                            emoveref.staggeramt = 0f;
+                        }
+
+                    }
+
+                    else if (tempVel > 3f)
+                    {
+                        emoveref.Edamage(hidmg);
+                        Instantiate(hifx, collision.GetContact(0).point, Quaternion.identity); // or set tran to collision.GetContact(0).point
+                        Instantiate(bloodfx, collision.GetContact(0).point, transform.rotation, null);
+                        emoveref.staggeramt += 6f;
+                        if (emoveref.staggeramt > 5.5f || emoveref.hp < hidmg)
+                        {
+                            emoveref.PlayHitAnim(FromRight(collision.GetContact(0).point));
+                            emoveref.staggeramt = 0f;
+                        }
+
+                    }
+
+                    else if (tempVel < 1f)
+                    {
+                        Instantiate(lolofx, collision.GetContact(0).point, Quaternion.identity);
+                    }
                 }
+            }
 
-                else if (tempVel > 2.5f)
-                {
-                    emoveref.Edamage(3);
-                    Instantiate(hifx, collision.GetContact(0).point, Quaternion.identity); // or set tran to collision.GetContact(0).point
-                     Instantiate(bloodfx, collision.GetContact(0).point, Quaternion.identity);
-                    emoveref.PlayHitAnim(FromRight(collision.GetContact(0).point));
-
-                }
-
-                else if (tempVel < 1f)
-                {
-                    Instantiate(lolofx, collision.GetContact(0).point, Quaternion.identity);
-                }
+            else
+            {
+                Instantiate(lolofx, collision.GetContact(0).point, Quaternion.identity);
             }
         }
     }

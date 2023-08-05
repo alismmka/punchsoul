@@ -12,15 +12,19 @@ public class enemymove : MonoBehaviour
     public float enemyspeed;
     public float atkrange;
     public float hp;
-    public float maxhp;
+    public float maxhp; 
+    public float staggeramt;
+    public float maxstaggeramt;
     bool hpvis = false;
     public Image hpimg;
+    public Image staggerimg;
     public Image hpbakimg;
     public Animator anim;
     public GameObject rag;
     public bool giant;
     public bool invulnerable = false;
     public float invultime = 0.1f;
+    public float ragoffset = 0.1f;
     
 
 
@@ -29,8 +33,8 @@ public class enemymove : MonoBehaviour
     {
         playertran = FindObjectOfType<Player>().transform;
         maxhp = hp;
-        hpimg.DOFade(0.01f, 0f);
-        hpbakimg.DOFade(0.01f, 0f);
+        //hpimg.DOFade(0.01f, 0f);
+        //hpbakimg.DOFade(0.01f, 0f);
     } 
 
     // Update is called once per frame
@@ -42,7 +46,7 @@ public class enemymove : MonoBehaviour
 
         if (playerdistfloat < 4f)
         {
-            this.transform.LookAt(targetPostition); //redundat for below chsange for testing
+            //this.transform.LookAt(targetPostition); //redundat for below chsange for testing
             anim.SetBool("run", true);
 
             if (playerdistfloat > atkrange)
@@ -61,7 +65,7 @@ public class enemymove : MonoBehaviour
             {
 
                 transform.position = Vector3.Lerp(transform.position, targetPostition, Time.deltaTime * enemyspeed);
-
+                this.transform.LookAt(targetPostition);
             }
         }
 
@@ -71,7 +75,11 @@ public class enemymove : MonoBehaviour
             anim.SetTrigger("idle");
         }
 
-       
+       if(staggeramt>0)
+        {
+            staggeramt -= Time.fixedDeltaTime;
+            staggerimg.fillAmount = Mathf.Clamp(staggeramt / maxstaggeramt, 0, 1f);
+        }
         
     }
 
@@ -97,7 +105,7 @@ public class enemymove : MonoBehaviour
 
     public void Edamage(int amt)
     {
-        switchhpvis();   
+       // switchhpvis();   
         if (invulnerable == true)
         {
             return;
@@ -107,14 +115,15 @@ public class enemymove : MonoBehaviour
         {
             if (hp <= 0 && !giant)
             {
+                Vector3 ragpos = new Vector3(transform.position.x, transform.position.y, transform.position.z + ragoffset);
                 //GetComponent<CapsuleCollider>().enabled = false;
-                Instantiate(rag, transform.position, transform.rotation);
+                Instantiate(rag, ragpos, transform.rotation);
                 Destroy(gameObject);
             }
             else
             {
                 hp -= amt;
-               // hpimg.fillAmount = Mathf.Clamp(hp / maxhp, 0, 1f);
+                hpimg.fillAmount = Mathf.Clamp(hp / maxhp, 0, 1f);
                 float duration = 0.75f * (hp / maxhp);
                 hpimg.DOFillAmount(hp / maxhp, duration);
             }
@@ -125,9 +134,10 @@ public class enemymove : MonoBehaviour
     {
         if (hpvis == false)
         {
+            hpvis = true;
             hpimg.DOFade(0f, 0.75f);
             hpbakimg.DOFade(0f, 0.5f);
-            hpvis = true;
+            
         }
         else
             return;

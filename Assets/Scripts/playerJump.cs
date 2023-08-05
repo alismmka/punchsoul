@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.XR.Interaction.Toolkit;
 using System.Collections.Generic;
-
+using System.Collections;
 
 [RequireComponent(typeof(Rigidbody))]
 
@@ -10,9 +10,13 @@ public class playerJump : MonoBehaviour
 {
     [SerializeField] private InputActionReference jumpActionReference;
     [SerializeField] private InputActionReference runActionReference;
+    [SerializeField] private InputActionReference rgrabActionReference;
+    [SerializeField] private InputActionReference lgrabActionReference;
     [SerializeField] private CharacterController characterController;
     [SerializeField] private float jumpForce = 500.0f;
     public Vector3 jumpvelocity;
+    public float dashCooldown;
+    WaitForSeconds dashcoolamt;
     public ActionBasedContinuousMoveProvider moveprovref;
 
 
@@ -23,6 +27,8 @@ public class playerJump : MonoBehaviour
 
     private void Awake()
     {
+        dashcoolamt = new WaitForSeconds(0.5f);
+
         if (!characterController)
             characterController = GetComponent<CharacterController>();
     }
@@ -43,13 +49,19 @@ public class playerJump : MonoBehaviour
             // jetpack mode characterController.Move(Vector3.up * jumpForce * Time.deltaTime);
         }
 
-        if(runActionReference.action.IsPressed()==true)
+        if(runActionReference.action.IsPressed() ==true)
         {
-            moveprovref.moveSpeed = 3f;
+            moveprovref.moveSpeed = 25f;
+            StartCoroutine(DashTimer());
+        }
+
+        if(rgrabActionReference.action.IsPressed()==true || lgrabActionReference.action.IsPressed() == true)
+        {
+            moveprovref.moveSpeed = 1f;
         }
         else
         {
-            moveprovref.moveSpeed = 1.5f;
+            moveprovref.moveSpeed = 2.5f;
         }
     }
 
@@ -77,5 +89,11 @@ public class playerJump : MonoBehaviour
         {
             grounded = false;
         }
+    }
+
+    IEnumerator DashTimer()
+    {
+        yield return dashcoolamt;
+        moveprovref.moveSpeed = 2.5f;
     }
 }

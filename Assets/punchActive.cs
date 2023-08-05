@@ -6,6 +6,7 @@ using UnityEngine.InputSystem;
 public class punchActive : MonoBehaviour
 {
     public GameObject PunchObj;
+    public GameObject PuncvisObj;
     [SerializeField] private InputActionReference GripRef;
 
     // Start is called before the first frame update
@@ -20,10 +21,12 @@ public class punchActive : MonoBehaviour
         if(GripRef.action.IsPressed() == true)
         {
             PunchObj.SetActive(true);
+            PuncvisObj.SetActive(true);
         }
         else
         {
             PunchObj.SetActive(false);
+            PuncvisObj.SetActive(false);
         }
     }
 }
