@@ -105,7 +105,7 @@ Transform:
   m_GameObject: {fileID: 3191802512787204702}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0.23, y: -2.03, z: -6.642}
-  m_LocalScale: {x: 1.15, y: 1.15, z: 1.15}
+  m_LocalScale: {x: 1.25, y: 1.25, z: 1.25}
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 7266903514554882677}
@@ -159,6 +159,7 @@ MonoBehaviour:
   hpbakimg: {fileID: 1712529171623999827}
   anim: {fileID: 8205684970948979358}
   rag: {fileID: 5361006724538857817, guid: d65611a0f31ac8d43b98bbcfdf89cb36, type: 3}
+  ragforce: 50
   giant: 0
   invulnerable: 0
   invultime: 0.2

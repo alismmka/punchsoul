@@ -13,6 +13,7 @@ public class defman : MonoBehaviour
     public float trigVal;
     WaitForSeconds waitperiod;
     public GameObject defbreakfx;
+    public GameObject defbfxpos;
     public bool broken;
 
 
@@ -45,7 +46,7 @@ public class defman : MonoBehaviour
     public IEnumerator DefBreakTimer(GameObject defpl)
     {
         Debug.Log("brokestart");
-        Instantiate(defbreakfx, defpl.transform.position, defpl.transform.rotation);
+        Instantiate(defbreakfx, defpl.transform.position, defpl.transform.rotation, transform);
         yield return new WaitForSeconds(3f);
         Debug.Log("brokebak");
         broken = false;

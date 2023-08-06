@@ -21,6 +21,7 @@ public class enemymove : MonoBehaviour
     public Image hpbakimg;
     public Animator anim;
     public GameObject rag;
+    public int ragforce;
     public bool giant;
     public bool invulnerable = false;
     public float invultime = 0.1f;
@@ -63,9 +64,8 @@ public class enemymove : MonoBehaviour
             }
             else if (anim.GetCurrentAnimatorStateInfo(0).IsName("run"))// && anim.GetCurrentAnimatorStateInfo(1).normalizedTime < 1.0f)
             {
-
-                transform.position = Vector3.Lerp(transform.position, targetPostition, Time.deltaTime * enemyspeed);
                 this.transform.LookAt(targetPostition);
+                transform.position = Vector3.Lerp(transform.position, targetPostition, Time.deltaTime * enemyspeed);
             }
         }
 
@@ -115,9 +115,21 @@ public class enemymove : MonoBehaviour
         {
             if (hp <= 0 && !giant)
             {
-                Vector3 ragpos = new Vector3(transform.position.x, transform.position.y, transform.position.z + ragoffset);
-                //GetComponent<CapsuleCollider>().enabled = false;
-                Instantiate(rag, ragpos, transform.rotation);
+                //Vector3 ragpos = new Vector3(transform.position.x, transform.position.y, transform.position.z + ragoffset);
+                GetComponent<CapsuleCollider>().enabled = false;
+                GameObject ragpref = Instantiate(rag, transform.position, transform.rotation);
+               if(anim.GetFloat("hitblend")>0.7f)
+                {
+                    ragpref.GetComponentInChildren<Rigidbody>().AddForce(transform.right*ragforce, ForceMode.Impulse);
+                }
+               else if(anim.GetFloat("hitblend") < 0.3f)
+                {
+                    ragpref.GetComponentInChildren<Rigidbody>().AddForce(-transform.right*ragforce, ForceMode.Impulse);
+                }
+               else
+                {
+                    ragpref.GetComponentInChildren<Rigidbody>().AddForce(-transform.forward*ragforce, ForceMode.Impulse);
+                }
                 Destroy(gameObject);
             }
             else

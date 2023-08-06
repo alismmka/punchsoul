@@ -19,6 +19,7 @@ public class defplane : MonoBehaviour
             other.gameObject.GetComponent<enemypunch>().Blockstun();
             defmanref.broken = true;
             defmanref.startdeftimer(gameObject);
+           // defmanref.defbfxpos = other.ClosestPoint(transform.position);
             gameObject.SetActive(false);
         }
     }

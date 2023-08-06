@@ -14,6 +14,7 @@ public class Player : MonoBehaviour
     {
         if (other.gameObject.CompareTag("epunch"))
         {
+            other.gameObject.GetComponent<enemypunch>().punchcol.enabled = false;
             PDamage();
         }
     }
